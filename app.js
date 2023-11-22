@@ -1,4 +1,11 @@
 const express = require("express");
+const mongoose =  require("mongoose")
+
+// connection to Database
+mongoose
+.connect("mongodb://localhost/bookStoreDB")
+.then(()=> console.log("connected to MongoDB"))
+.catch((err) => console.log("connection Failed to Mongodb", err))
 
 //Init App
 const app = express();
