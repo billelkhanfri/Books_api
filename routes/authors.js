@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { Author, validateCreateAuthor,validateUpdateAuthor } = require("../models/Authors");
+const {
+  Author,
+  validateCreateAuthor,
+  validateUpdateAuthor,
+} = require("../models/Authors");
 /**
  * @desc Get All authors
  * @route /api/authors
@@ -9,9 +13,8 @@ const { Author, validateCreateAuthor,validateUpdateAuthor } = require("../models
  */
 router.get("/", async (req, res) => {
   try {
-    const authorList = await Author.find()
-      .sort({ first_name: 1 })
-      .select("last_name");
+    const authorList = await Author.find().sort({ first_name: 1 });
+
     res.status(200).json(authorList);
   } catch (err) {
     console.log(err);
@@ -91,11 +94,11 @@ router.put("/:id", async (req, res) => {
     );
 
     res.status(200).json(author);
-     if (book) {
-       res.status(200).json({ message: "author has been updated" });
-     } else {
-       res.status(404).json({ message: "author not found" });
-     }
+    if (book) {
+      res.status(200).json({ message: "author has been updated" });
+    } else {
+      res.status(404).json({ message: "author not found" });
+    }
   } catch (err) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong" });
@@ -122,7 +125,5 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 });
-
-
 
 module.exports = router;
