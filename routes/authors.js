@@ -91,6 +91,11 @@ router.put("/:id", async (req, res) => {
     );
 
     res.status(200).json(author);
+     if (book) {
+       res.status(200).json({ message: "author has been updated" });
+     } else {
+       res.status(404).json({ message: "author not found" });
+     }
   } catch (err) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong" });
@@ -113,7 +118,7 @@ router.delete("/:id", async (req, res) => {
       res.status(404).json({ message: "Author not found" });
     }
   } catch (err) {
-    console.log(error);
+    console.log(err);
     res.status(500).json({ message: "Something went wrong" });
   }
 });
