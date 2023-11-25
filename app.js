@@ -18,6 +18,7 @@ app.use(logger);
 
 const booksPath = require("./routes/books");
 const authorPath = require("./routes/authors");
+const authPath = require("./routes/auth");
 
 //Apply middlewares
 app.use(express.json());
@@ -25,11 +26,11 @@ app.use(express.json());
 //Routes
 app.use("/api/books", booksPath);
 app.use("/api/authors", authorPath);
-
+app.use("/api/auth", authPath);
 // error andler middleware
 
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = 4000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
