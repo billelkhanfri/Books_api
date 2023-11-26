@@ -3,6 +3,11 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const logger = require("./middlewares/logger");
 const { notFound, errorHandler } = require("./middlewares/errors");
+const cors = require("cors");
+
+// Use the CORS middleware
+
+// Rest of your server code...
 
 dotenv.config();
 
@@ -15,6 +20,8 @@ mongoose
 //Init App
 const app = express();
 app.use(logger);
+app.use(cors());
+
 
 const booksPath = require("./routes/books");
 const authorPath = require("./routes/authors");

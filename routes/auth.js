@@ -23,7 +23,7 @@ router.post(
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-    let user = await User.findOne({ email: req.body.email });
+let user = await User.findOne({ email: req.body.email }).select("-password");
     if (user) {
       return res
         .status(400)
@@ -68,7 +68,7 @@ router.post(
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-    let user = await User.findOne({ email: req.body.email });
+let user = await User.findOne({ email: req.body.email }).select("-password");
     if (!user) {
       return res.status(400).json({ message: "invalid email or password" });
     }
