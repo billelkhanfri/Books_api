@@ -15,6 +15,28 @@ function verifyToken(req, res, next) {
     res.status(401).json({ messgae: "no token provided" });
   }
 }
+
+function verifyTokenAndAuthorization(req, res, next) {
+  verifyToken(req, res, () => {
+    if (req.user.id === req.params.id || req.user.isAdmin) {
+      next();
+    } else {
+      return res.status(403).json({ message: "you are not allowed" });
+    }
+  });
+}
+
+function verifyTokenAndAdmin(req, res, next) {
+  verifyToken(req, res, () => {
+    if (req.user.isAdmin) {
+      next();
+    } else {
+      return res.status(403).json({ message: "only admins are allowed" });
+    }
+  });
+}
 module.exports = {
   verifyToken,
+  verifyTokenAndAuthorization,
+  verifyTokenAndAdmin,
 };
