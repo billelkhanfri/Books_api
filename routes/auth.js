@@ -3,6 +3,8 @@ const router = express.Router();
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
 const {
   User,
   validateRegisterUser,
@@ -23,7 +25,9 @@ router.post(
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-let user = await User.findOne({ email: req.body.email }).select("-password");
+    let user = await User.findOne({ email: req.body.email }).select(
+      "-password"
+    );
     if (user) {
       return res
         .status(400)
@@ -60,7 +64,6 @@ let user = await User.findOne({ email: req.body.email }).select("-password");
  * @method POST
  * @access Public
  */
-
 router.post(
   "/login",
   asyncHandler(async (req, res) => {
@@ -68,26 +71,30 @@ router.post(
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-let user = await User.findOne({ email: req.body.email }).select("-password");
+
+    let user = await User.findOne({ email: req.body.email });
+
     if (!user) {
-      return res.status(400).json({ message: "invalid email or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const isPasswordMatch = await bcrypt.compare(
       req.body.password,
       user.password
     );
+
     if (!isPasswordMatch) {
-      return res.status(400).json({ message: "invalid password or passwaord" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const token = jwt.sign(
       { id: user._id, isAdmin: user.isAdmin },
       process.env.JWT_SECRET_KEY,
       {
-        expiresIn: "24h",
+        expiresIn: "80h",
       }
     );
+
     const { password, ...other } = user._doc;
     res.status(200).json({ ...other, token });
   })
