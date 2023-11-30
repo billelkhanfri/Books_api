@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const asyncHandler = require("express-async-handler");
+const { verifyTokenAndAdmin } = require("../middlewares/verifyToken");
 
 const {
   Book,
@@ -52,10 +53,11 @@ router.get(
  * @desc  Post new book
  * @route api/books/
  * @method Post
- * @access Public
+ * @access Private
  */
 router.post(
   "/",
+  verifyTokenAndAdmin,
   asyncHandler(async (req, res) => {
     const { error } = validateCreateBook(req.body);
     if (error) {
@@ -65,10 +67,9 @@ router.post(
     const book = new Book({
       title: req.body.title,
       author: req.body.author,
-      genre: req.body.genre,
+      description: req.body.description,
       price: req.body.price,
       cover: req.body.cover,
-      language: req.body.language,
     });
     const result = await book.save();
     res.status(201).json(result);
@@ -79,11 +80,12 @@ router.post(
  * @desc  Update book
  * @route api/books/:id
  * @method Put
- * @access Public
+ * @access Private (only admin)
  */
 
 router.put(
   "/:id",
+  verifyTokenAndAdmin,
   asyncHandler(async (req, res) => {
     const { error } = validateUpdateBook(req.body);
     if (error) {
@@ -95,10 +97,9 @@ router.put(
         $set: {
           title: req.body.title,
           author: req.body.author,
-          genre: req.body.genre,
+          description: req.body.description,
           price: req.body.price,
           cover: req.body.cover,
-          language: req.body.language,
         },
       },
       { new: true }
@@ -116,10 +117,11 @@ router.put(
  * @desc  Delete book
  * @route api/books/:id
  * @method Delete
- * @access Public
+ * @access Private
  */
 router.delete(
   "/:id",
+  verifyTokenAndAdmin,
   asyncHandler(async (req, res) => {
     const book = await Book.findById(req.params.id);
     if (book) {

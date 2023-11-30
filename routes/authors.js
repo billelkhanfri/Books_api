@@ -5,6 +5,8 @@ const {
   validateCreateAuthor,
   validateUpdateAuthor,
 } = require("../models/Authors");
+
+const { verifyTokenAndAdmin } = require("../middlewares/verifyToken");
 /**
  * @desc Get All authors
  * @route /api/authors
@@ -46,17 +48,17 @@ router.get("/:id", async (req, res) => {
  * @desc create a new author
  * @route /api/authors/
  * @method POST
- * @access Public
+ * @access Private (only admin)
  */
-router.post("/", async (req, res) => {
+router.post("/", verifyTokenAndAdmin, async (req, res) => {
   const { error } = validateCreateAuthor(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
   }
   try {
     const author = new Author({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       nationality: req.body.nationality,
       image: req.body.image,
     });
@@ -72,9 +74,9 @@ router.post("/", async (req, res) => {
  * @desc update author
  * @route /api/authors/:id
  * @method Put
- * @access Public
+ * @access Private
  */
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
   const { error } = validateUpdateAuthor(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -84,8 +86,8 @@ router.put("/:id", async (req, res) => {
       req.params.id,
       {
         $set: {
-          first_name: req.body.first_name,
-          last_name: req.body.last_name,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
           nationality: req.body.nationality,
           image: req.body.image,
         },
@@ -109,9 +111,9 @@ router.put("/:id", async (req, res) => {
  * @desc delete author
  * @route /api/authors/:id
  * @method Delete
- * @access Public
+ * @access Private
  */
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
   const author = await Author.findById(req.params.id);
   try {
     if (author) {
