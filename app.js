@@ -4,21 +4,29 @@ const { notFound, errorHandler } = require("./middlewares/errors");
 const connectToDB = require("./config/db");
 require("dotenv").config();
 const path = require("path");
+const helmet = require("helmet");
+const cors = require("cors");
 
 // connection to Database
 connectToDB();
 
 //Init App
 const app = express();
-app.use(logger);
 
 //Static Folder
 app.use(express.static(path.join(__dirname, "images")));
 //Apply middlewares
 app.use(express.json());
-app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
+app.use(logger);
 
+// setView engin
+app.set("view engine", "ejs");
+
+// Helmet
+app.use(helmet());
+// Cors Policy
+app.use(cors());
 //Routes
 app.use("/api/books", require("./routes/books"));
 app.use("/api/authors", require("./routes/authors"));
